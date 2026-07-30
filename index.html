@@ -77,12 +77,20 @@
   .tag{font-family:var(--disp);font-weight:500;font-style:italic;font-size:clamp(17px,3.4vw,23px);color:var(--cream);margin:16px auto 0;max-width:30ch;opacity:.92}
   .sub{color:var(--muted);font-size:14px;margin-top:10px}
   .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
-  .btn{font-family:var(--body);font-weight:600;font-size:15px;border:0;cursor:pointer;border-radius:12px;padding:15px 26px;display:inline-flex;align-items:center;gap:9px;text-decoration:none;transition:transform .12s ease,box-shadow .12s ease,background .2s}
-  .btn.gold{background:linear-gradient(180deg,var(--gold-bright),var(--gold) 55%,var(--gold-deep));color:#231703;box-shadow:0 10px 30px rgba(111,196,79,.28),inset 0 1px 0 rgba(255,255,255,.4)}
-  .btn.gold:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(111,196,79,.38)}
-  .btn.ghost{background:rgba(111,196,79,.05);color:var(--gold);border:1px solid var(--line)}
-  .btn.ghost:hover{background:rgba(111,196,79,.1)}
-  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .btn{font-family:var(--body);font-weight:600;font-size:15px;letter-spacing:.01em;border:0;cursor:pointer;border-radius:13px;padding:15px 28px;display:inline-flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;position:relative;overflow:hidden;isolation:isolate;transition:transform .18s cubic-bezier(.2,.7,.3,1),box-shadow .25s ease,background .25s ease,filter .25s ease}
+  .btn.gold{background:linear-gradient(180deg,var(--gold-bright),var(--gold) 52%,var(--gold-deep));color:#08160b;text-shadow:0 1px 0 rgba(255,255,255,.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -12px 22px -14px rgba(0,0,0,.45),0 12px 30px -8px rgba(111,196,79,.55),0 2px 6px rgba(0,0,0,.28)}
+  .btn.gold::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,0) 46%);pointer-events:none}
+  .btn.gold::after{content:"";position:absolute;top:0;left:-130%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);transform:skewX(-18deg);transition:left .7s cubic-bezier(.2,.7,.3,1);pointer-events:none}
+  .btn.gold:hover{transform:translateY(-2px);filter:brightness(1.06) saturate(1.05);box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 -12px 22px -14px rgba(0,0,0,.45),0 22px 48px -10px rgba(111,196,79,.65),0 3px 9px rgba(0,0,0,.32)}
+  .btn.gold:hover::after{left:150%}
+  .btn.gold:active{transform:translateY(0) scale(.99);box-shadow:inset 0 2px 6px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.3),0 6px 16px -8px rgba(111,196,79,.5)}
+  .btn.ghost{background:linear-gradient(180deg,rgba(111,196,79,.09),rgba(111,196,79,.03));color:var(--gold);border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+  .btn.ghost::after{content:"";position:absolute;top:0;left:-130%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(166,232,132,.2),transparent);transform:skewX(-18deg);transition:left .7s cubic-bezier(.2,.7,.3,1);pointer-events:none}
+  .btn.ghost:hover{transform:translateY(-2px);color:var(--gold-bright);border-color:var(--gold);background:linear-gradient(180deg,rgba(111,196,79,.17),rgba(111,196,79,.06));box-shadow:0 12px 28px -12px rgba(111,196,79,.55),inset 0 1px 0 rgba(255,255,255,.08)}
+  .btn.ghost:hover::after{left:150%}
+  .btn.ghost:active{transform:translateY(0) scale(.99)}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;filter:none}
+  .btn:disabled::after{display:none}
   .btn svg{width:17px;height:17px}
   .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);text-align:center;margin:0 0 6px}
   .h2{font-family:var(--disp);font-weight:600;font-size:clamp(26px,5vw,36px);text-align:center;margin:0 0 34px;color:var(--cream)}
@@ -146,6 +154,16 @@
   .prog .bar{height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold));border-radius:99px;width:0;transition:width .5s}
   .prog-lbl{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:6px;min-height:16px}
   .badge.grad{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:#08140a;background:var(--gold-bright);border-radius:6px;padding:2px 7px;font-weight:700}
+  .badge.you{font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--gold-bright);border:1px solid var(--gold-deep);border-radius:6px;padding:2px 6px;background:rgba(111,196,79,.08)}
+  .tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:-14px 0 24px}
+  .tab{font-family:var(--mono);font-size:12px;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:999px;padding:7px 16px;cursor:pointer;transition:.15s}
+  .tab:not(.on):hover{border-color:var(--gold);color:var(--cream)}
+  .tab.on{color:#08140a;background:var(--gold);border-color:var(--gold)}
+  .mine-card .hd{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .mine-card .stats{display:flex;gap:16px;flex-wrap:wrap}
+  .mine-card .stat{display:flex;flex-direction:column;gap:1px}
+  .mine-card .stat .k{font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--gold-deep);text-transform:uppercase}
+  .mine-card .stat .v{font-family:var(--disp);font-weight:600;font-size:15px;color:var(--cream)}
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--panel2);border:1px solid var(--line);color:var(--cream);font-size:14px;padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:70;box-shadow:0 12px 40px rgba(0,0,0,.5)}
   .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
   .toast.bad{border-color:rgba(224,122,74,.5)}
@@ -203,10 +221,15 @@
     <div class="mine-actions"><button class="lnk" id="addToken">+ Add a token you launched</button></div>
   </section>
 
-  <section id="grad">
-    <p class="eyebrow">Made it</p>
-    <h2 class="h2">Graduated on Stable</h2>
-    <div id="gradGrid" class="mine-grid"></div>
+  <section id="discover">
+    <p class="eyebrow">Live on Stable</p>
+    <h2 class="h2">Discover</h2>
+    <div class="tabs" id="discTabs">
+      <button class="tab on" data-f="all">All</button>
+      <button class="tab" data-f="graduated">Graduated</button>
+      <button class="tab" data-f="yours">Yours</button>
+    </div>
+    <div id="discGrid" class="mine-grid"></div>
   </section>
 
   <footer>
@@ -391,13 +414,15 @@
   async function paintNet(){ if(!window.ethereum) return; try{ const id=await window.ethereum.request({method:'eth_chainId'}); $('netpill').textContent=parseInt(id,16)===988?'STABLE · CONNECTED':'WRONG CHAIN · SWITCH TO 988'; }catch{} }
   // Wallet is only accessed on explicit user action, never on page load.
 
-  // -- My launches + Graduated feed --
+  // -- My launches + Discover feed --
   const LS_KEY='finpad:launches';
   const API_ORIGIN=(function(){ try{ return new URL(API).origin; }catch(e){ return ''; } })();
   function esc(v){ return String(v==null?'':v).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
   function shortAddr(a){ a=String(a||''); return a.length>12?(a.slice(0,6)+'…'+a.slice(-4)):a; }
   function resolveImg(u){ if(!u) return ''; u=String(u); if(/^https?:\/\//.test(u)||u.startsWith('data:')) return u; if(u.startsWith('/')) return API_ORIGIN+u; return u; }
   function pick(){ for(let i=0;i<arguments.length;i++){ if(arguments[i]!=null && arguments[i]!=='') return arguments[i]; } return undefined; }
+  function fmtUsd(n){ n=Number(n)||0; if(n>=1e6) return '$'+(n/1e6).toFixed(2)+'M'; if(n>=1e3) return '$'+(n/1e3).toFixed(2)+'K'; return '$'+n.toFixed(2); }
+  function fmtNum(n){ n=Number(n)||0; if(n>=1e6) return (n/1e6).toFixed(2)+'M'; if(n>=1e3) return (n/1e3).toFixed(2)+'K'; return n>=1?n.toFixed(2):n.toFixed(4); }
   function getMine(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'[]'); }catch(e){ return []; } }
   function saveMine(l){ try{ localStorage.setItem(LS_KEY, JSON.stringify(l.slice(0,60))); }catch(e){} }
   function addMine(entry){ const l=getMine(); if(entry && entry.address && !l.some(x=>x.address&&x.address.toLowerCase()===entry.address.toLowerCase())){ l.unshift(entry); saveMine(l); } renderMine(); }
@@ -410,22 +435,32 @@
   }
   function normalizeToken(t){
     if(!t||typeof t!=='object') return null;
-    const address=pick(t.address,t.tokenAddress,t.token,t.contract,t.id); if(!address) return null;
+    const address=pick(t.token,t.address,t.tokenAddress,t.contract,t.id); if(!address||typeof address!=='string') return null;
     const md=t.metadata||{};
     const name=pick(t.name,md.name,'Token');
     const symbol=pick(t.symbol,t.ticker,md.symbol,'');
-    const image=resolveImg(pick(t.image,t.imageUrl,t.logo,t.icon,md.image,''));
-    const p=t.progress||{};
-    let bps=Number(pick(p.bps,t.progressBps,t.bps,0))||0; bps=Math.max(0,Math.min(10000,bps));
-    const graduated=(p.graduated===true)||(t.graduated===true)||bps>=10000;
-    return { address:String(address), name, symbol, image, bps, graduated };
+    const image=resolveImg(pick(t.image,t.imageUrl,t.logo,md.image,''));
+    let bps=Number(pick(t.progressBps,(t.progress&&t.progress.bps),t.bps,0))||0; bps=Math.max(0,Math.min(10000,bps));
+    const graduated=(t.graduated===true)||(t.progress&&t.progress.graduated===true)||bps>=10000;
+    let marketCap=null; const mc=Number(t.marketCapEth); if(isFinite(mc)&&mc>0) marketCap=mc/1e6;
+    let pool=null; if(t.poolBalanceEth!=null){ const p=Number(t.poolBalanceEth); if(isFinite(p)) pool=p; } else if(t.liquidityEth!=null){ const li=Number(t.liquidityEth); if(isFinite(li)) pool=li/1e6; }
+    const mine=getMine().some(x=>x.address&&x.address.toLowerCase()===address.toLowerCase());
+    return { address, name, symbol, image, bps, graduated, marketCap, pool, yours:mine };
+  }
+  function statsHtml(t){
+    const parts=[];
+    if(t.marketCap!=null) parts.push('<div class="stat"><span class="k">Mcap</span><span class="v">'+fmtUsd(t.marketCap)+'</span></div>');
+    if(t.pool!=null) parts.push('<div class="stat"><span class="k">Pool</span><span class="v">'+fmtNum(t.pool)+'</span></div>');
+    return parts.join('');
   }
   function tokenCard(t){
     const im=t.image?('<img src="'+esc(t.image)+'" alt="">'):'<img alt="">';
     const pct=Math.round((t.bps||0)/100);
+    const you=t.yours?' <span class="badge you">YOURS</span>':'';
     const lbl=t.graduated?'<span class="badge grad">GRADUATED</span>':(pct+'% to graduation');
     return '<div class="mine-card" data-addr="'+esc(String(t.address).toLowerCase())+'"><div class="top">'+im
-      +'<div><div class="nm">'+esc(t.name||'Token')+'</div><div class="tk">'+(t.symbol?('$'+esc(t.symbol)):'')+'</div></div></div>'
+      +'<div><div class="hd"><div class="nm">'+esc(t.name||'Token')+'</div>'+you+'</div><div class="tk">'+(t.symbol?('$'+esc(t.symbol)):'')+'</div></div></div>'
+      +'<div class="stats">'+statsHtml(t)+'</div>'
       +'<div class="prog"><div class="bar" style="width:'+pct+'%"></div></div>'
       +'<div class="prog-lbl">'+lbl+'</div>'
       +'<div class="row"><a class="chip" href="https://stablescan.xyz/token/'+esc(t.address)+'" target="_blank" rel="noopener">explorer ↗</a>'
@@ -434,12 +469,12 @@
   function renderMine(){
     const grid=$('mineGrid'); if(!grid) return; const l=getMine();
     if(!l.length){ grid.innerHTML='<div class="mine-empty">Your FINPAD launches show up here. Launch a token above, or add one you already launched.</div>'; return; }
-    grid.innerHTML=l.map(t=>tokenCard({address:t.address,name:t.name,symbol:t.symbol,image:resolveImg(t.image),bps:0,graduated:false})).join('');
+    grid.innerHTML=l.map(t=>tokenCard({address:t.address,name:t.name,symbol:t.symbol,image:resolveImg(t.image),bps:0,graduated:false,yours:true})).join('');
     enrichMine();
   }
   async function enrichMine(){
     for(const t of getMine()){
-      try{ const r=await fetch(API+'/tokens/'+t.address); if(!r.ok) continue; const n=normalizeToken(await r.json()); if(n) updateCard(n); }catch(e){}
+      try{ const r=await fetch(API+'/tokens/'+t.address); if(!r.ok) continue; const j=await r.json(); let n=normalizeToken(j); if(!n) n=normalizeToken(j.item||j.data||{}); if(n){ n.yours=true; updateCard(n); } }catch(e){}
     }
   }
   function updateCard(n){
@@ -448,21 +483,27 @@
       const pct=Math.round((n.bps||0)/100);
       const bar=c.querySelector('.bar'); if(bar) bar.style.width=pct+'%';
       const lbl=c.querySelector('.prog-lbl'); if(lbl) lbl.innerHTML=n.graduated?'<span class="badge grad">GRADUATED</span>':(pct+'% to graduation');
+      const st=c.querySelector('.stats'); if(st) st.innerHTML=statsHtml(n);
       const img=c.querySelector('img'); if(img && n.image && !img.getAttribute('src')) img.setAttribute('src',n.image);
       const nm=c.querySelector('.nm'); if(nm && n.name && nm.textContent==='Token') nm.textContent=n.name;
     });
   }
-  async function loadGraduated(){
-    const grid=$('gradGrid'); if(!grid) return;
-    grid.innerHTML='<div class="mine-empty">Loading…</div>';
-    try{
-      const r=await fetch(API+'/tokens?limit=100'); if(!r.ok) throw 0;
-      const j=await r.json(); const arr=Array.isArray(j)?j:(j.tokens||j.data||j.items||[]);
-      const grads=arr.map(normalizeToken).filter(t=>t&&t.graduated).slice(0,24);
-      if(!grads.length){ grid.innerHTML='<div class="mine-empty">No tokens have graduated yet. Be the first.</div>'; return; }
-      grid.innerHTML=grads.map(tokenCard).join('');
-    }catch(e){ grid.innerHTML='<div class="mine-empty">Could not load right now.</div>'; }
+  let discCache=null;
+  async function loadDiscover(filter){
+    const grid=$('discGrid'); if(!grid) return;
+    if(!discCache){
+      grid.innerHTML='<div class="mine-empty">Loading…</div>';
+      try{ const r=await fetch(API+'/tokens?limit=40'); if(!r.ok) throw 0; const j=await r.json(); const arr=j.items||j.tokens||j.data||(Array.isArray(j)?j:[]); discCache=arr.map(normalizeToken).filter(Boolean); }
+      catch(e){ grid.innerHTML='<div class="mine-empty">Could not load right now.</div>'; return; }
+    }
+    let list=discCache;
+    if(filter==='graduated') list=list.filter(t=>t.graduated);
+    else if(filter==='yours') list=list.filter(t=>t.yours);
+    if(!list.length){ grid.innerHTML='<div class="mine-empty">'+(filter==='graduated'?'No tokens have graduated yet. Be the first.':(filter==='yours'?'None of your launches are in the latest batch yet.':'Nothing to show right now.'))+'</div>'; return; }
+    grid.innerHTML=list.slice(0,36).map(tokenCard).join('');
   }
+  const discTabs=$('discTabs');
+  if(discTabs) discTabs.addEventListener('click', e=>{ const b=e.target.closest('.tab'); if(!b) return; discTabs.querySelectorAll('.tab').forEach(x=>x.classList.remove('on')); b.classList.add('on'); loadDiscover(b.getAttribute('data-f')); });
   const addTokenBtn=$('addToken');
   if(addTokenBtn) addTokenBtn.addEventListener('click', async ()=>{
     const a=(prompt('Paste the token contract address (0x...)')||'').trim();
@@ -473,7 +514,7 @@
     addMine(entry); toast('Added.');
   });
   renderMine();
-  loadGraduated();
+  loadDiscover('all');
 </script>
 </body>
 </html>
