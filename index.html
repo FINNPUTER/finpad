@@ -152,6 +152,11 @@
   .mine-card a.chip:hover{background:rgba(111,196,79,.12)}
   .mine-empty{color:var(--muted);font-size:14px;text-align:center;padding:26px;border:1px dashed var(--line);border-radius:14px}
   .mine-actions{margin-top:16px;text-align:center}
+  .mine-note{text-align:center;color:var(--muted);font-size:13px;max-width:56ch;margin:-22px auto 26px;line-height:1.5}
+  .mine-card button.chip{font-family:var(--mono);font-size:11px;color:var(--gold);border:1px solid var(--line);border-radius:7px;padding:5px 8px;background:rgba(111,196,79,.05);cursor:pointer}
+  .mine-card button.chip:hover{background:rgba(111,196,79,.12)}
+  .mine-card .chip.claim{color:#08140a;background:var(--gold);border-color:var(--gold);font-weight:700}
+  .mine-card .chip.claim:hover{filter:brightness(1.07);background:var(--gold)}
   .prog{height:6px;background:rgba(111,196,79,.12);border-radius:99px;overflow:hidden;margin-top:2px}
   .prog .bar{height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold));border-radius:99px;width:0;transition:width .5s}
   .prog-lbl{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:6px;min-height:16px}
@@ -219,6 +224,7 @@
   <section id="mine">
     <p class="eyebrow">Your launches</p>
     <h2 class="h2">Tokens you launched on FINPAD</h2>
+    <p class="mine-note">Trading fees pile up in your locked pool as people trade. Claim them here anytime — it’s a tiny gas fee, and 80% is yours.</p>
     <div id="mineGrid" class="mine-grid"></div>
     <div class="mine-actions"><button class="lnk" id="addToken">+ Add a token you launched</button></div>
   </section>
@@ -467,12 +473,12 @@
       +'<div class="prog"><div class="bar" style="width:'+pct+'%"></div></div>'
       +'<div class="prog-lbl">'+lbl+'</div>'
       +'<div class="row"><a class="chip" href="https://stablescan.xyz/token/'+esc(t.address)+'" target="_blank" rel="noopener">explorer ↗</a>'
-      +'<a class="chip" href="https://dexscreener.com/stable/'+esc(t.address)+'" target="_blank" rel="noopener">chart ↗</a></div></div>';
+      +'<a class="chip" href="https://dexscreener.com/stable/'+esc(t.address)+'" target="_blank" rel="noopener">chart ↗</a>'+(t.claimable?'<button class="chip claim" data-token="'+esc(t.address)+'">claim fees</button>':'')+'</div></div>';
   }
   function renderMine(){
     const grid=$('mineGrid'); if(!grid) return; const l=getMine();
     if(!l.length){ grid.innerHTML='<div class="mine-empty">Your FINPAD launches show up here. Launch a token above, or add one you already launched.</div>'; return; }
-    grid.innerHTML=l.map(t=>tokenCard({address:t.address,name:t.name,symbol:t.symbol,image:resolveImg(t.image),bps:0,graduated:false,yours:true})).join('');
+    grid.innerHTML=l.map(t=>tokenCard({address:t.address,name:t.name,symbol:t.symbol,image:resolveImg(t.image),bps:0,graduated:false,yours:true,claimable:true})).join('');
     enrichMine();
   }
   async function enrichMine(){
@@ -516,6 +522,25 @@
     try{ const r=await fetch(API+'/tokens/'+a); if(r.ok){ const n=normalizeToken(await r.json()); if(n){ entry.name=n.name; entry.symbol=n.symbol; entry.image=n.image; } } }catch(e){}
     addMine(entry); toast('Added.');
   });
+  const LOCKER='0xA8fB5FFB66E8a3A91EF1e18de91432D46AaB5871';
+  async function claimFees(tokenAddress, btn){
+    if(!tokenAddress) return;
+    const old=btn?btn.textContent:''; if(btn){ btn.disabled=true; btn.textContent='claiming…'; }
+    try{
+      let posId=null;
+      try{ const r=await fetch(API+'/tokens/'+tokenAddress); if(r.ok){ const j=await r.json(); posId=(j&&j.position_id)||(j&&j.item&&j.item.position_id); } }catch(e){}
+      if(posId==null){ toast('Could not find this token’s pool position.',true); return; }
+      const from=await ensureWallet();
+      const idHex=BigInt(posId).toString(16).padStart(64,'0');
+      const txHash=await window.ethereum.request({method:'eth_sendTransaction',params:[{ from, to:LOCKER, data:'0xddc63262'+idHex, value:'0x0' }]});
+      toast('Claiming…');
+      const rcpt=await waitReceipt(txHash);
+      if(rcpt && rcpt.status && parseInt(rcpt.status,16)===0) toast('No fees to claim yet.',true);
+      else toast('Fees harvested — your 80% is on the way.');
+    }catch(e){ toast(e && e.code===4001 ? 'Cancelled.' : (e&&e.message)||'Claim failed.', true); }
+    finally{ if(btn){ btn.disabled=false; btn.textContent=old; } }
+  }
+  (function(){ const g=$('mineGrid'); if(g) g.addEventListener('click', e=>{ const b=e.target.closest('.claim'); if(b){ e.preventDefault(); claimFees(b.getAttribute('data-token'), b); } }); })();
   renderMine();
   loadDiscover('all');
 </script>
