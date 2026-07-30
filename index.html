@@ -130,6 +130,22 @@
   .status .g{color:var(--ok)}
   .status a{color:var(--gold)}
   .hint{font-size:11px;color:var(--muted);margin-top:2px}
+  .mine-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+  .mine-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:9px}
+  .mine-card .top{display:flex;gap:11px;align-items:center}
+  .mine-card img{width:46px;height:46px;border-radius:10px;object-fit:cover;background:#0d0b07;flex:none}
+  .mine-card .nm{font-family:var(--disp);font-weight:600;font-size:16px;color:var(--gold-bright);line-height:1.15}
+  .mine-card .tk{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .mine-card .addr{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .mine-card .row{display:flex;gap:8px;flex-wrap:wrap}
+  .mine-card a.chip{font-family:var(--mono);font-size:11px;color:var(--gold);border:1px solid var(--line);border-radius:7px;padding:5px 8px;text-decoration:none;background:rgba(111,196,79,.05)}
+  .mine-card a.chip:hover{background:rgba(111,196,79,.12)}
+  .mine-empty{color:var(--muted);font-size:14px;text-align:center;padding:26px;border:1px dashed var(--line);border-radius:14px}
+  .mine-actions{margin-top:16px;text-align:center}
+  .prog{height:6px;background:rgba(111,196,79,.12);border-radius:99px;overflow:hidden;margin-top:2px}
+  .prog .bar{height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold));border-radius:99px;width:0;transition:width .5s}
+  .prog-lbl{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:6px;min-height:16px}
+  .badge.grad{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:#08140a;background:var(--gold-bright);border-radius:6px;padding:2px 7px;font-weight:700}
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--panel2);border:1px solid var(--line);color:var(--cream);font-size:14px;padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:70;box-shadow:0 12px 40px rgba(0,0,0,.5)}
   .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
   .toast.bad{border-color:rgba(224,122,74,.5)}
@@ -178,6 +194,19 @@
       <dl class="kv"><dt>Network</dt><dd>Stable Mainnet</dd><dt>Chain ID</dt><dd>988</dd><dt>Gas token</dt><dd>USDT0</dd><dt>RPC</dt><dd>https://rpc.stable.xyz</dd><dt>Explorer</dt><dd>https://stablescan.xyz</dd></dl>
       <div class="netcta"><button class="btn gold" id="addBtn3">Add Stable to wallet</button><p class="note">Prompts your wallet to add the network. Nothing is signed, nothing is spent.</p></div>
     </div>
+  </section>
+
+  <section id="mine">
+    <p class="eyebrow">Your launches</p>
+    <h2 class="h2">Tokens you launched on FINPAD</h2>
+    <div id="mineGrid" class="mine-grid"></div>
+    <div class="mine-actions"><button class="lnk" id="addToken">+ Add a token you launched</button></div>
+  </section>
+
+  <section id="grad">
+    <p class="eyebrow">Made it</p>
+    <h2 class="h2">Graduated on Stable</h2>
+    <div id="gradGrid" class="mine-grid"></div>
   </section>
 
   <footer>
@@ -339,6 +368,7 @@
       setStatus('Launching on-chain… <a href="https://stablescan.xyz/tx/'+txHash+'" target="_blank" rel="noopener">view tx ↗</a>');
       const rcpt=await waitReceipt(txHash);
       if(rcpt && rcpt.status && parseInt(rcpt.status,16)===0){ throw new Error('The launch transaction reverted.'); }
+      try{ const _t=extractToken(rcpt); if(_t) addMine({ address:_t, name, symbol, image:(img&&img.url)||'', ts:Date.now() }); }catch(_){}
       setStatus('🎉 Launched! <a href="https://stablescan.xyz/tx/'+txHash+'" target="_blank" rel="noopener">view on stablescan ↗</a> · your token appears on DYOR shortly.','g');
       toast('Token launched.');
     }catch(e){
@@ -360,6 +390,90 @@
   $('copyCa').addEventListener('click',async()=>{ try{ await navigator.clipboard.writeText(FINNY_CA); toast('$FINNY contract copied.'); }catch{ const t=document.createElement('textarea'); t.value=FINNY_CA; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); toast('$FINNY contract copied.'); } });
   async function paintNet(){ if(!window.ethereum) return; try{ const id=await window.ethereum.request({method:'eth_chainId'}); $('netpill').textContent=parseInt(id,16)===988?'STABLE · CONNECTED':'WRONG CHAIN · SWITCH TO 988'; }catch{} }
   // Wallet is only accessed on explicit user action, never on page load.
+
+  // -- My launches + Graduated feed --
+  const LS_KEY='finpad:launches';
+  const API_ORIGIN=(function(){ try{ return new URL(API).origin; }catch(e){ return ''; } })();
+  function esc(v){ return String(v==null?'':v).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+  function shortAddr(a){ a=String(a||''); return a.length>12?(a.slice(0,6)+'…'+a.slice(-4)):a; }
+  function resolveImg(u){ if(!u) return ''; u=String(u); if(/^https?:\/\//.test(u)||u.startsWith('data:')) return u; if(u.startsWith('/')) return API_ORIGIN+u; return u; }
+  function pick(){ for(let i=0;i<arguments.length;i++){ if(arguments[i]!=null && arguments[i]!=='') return arguments[i]; } return undefined; }
+  function getMine(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'[]'); }catch(e){ return []; } }
+  function saveMine(l){ try{ localStorage.setItem(LS_KEY, JSON.stringify(l.slice(0,60))); }catch(e){} }
+  function addMine(entry){ const l=getMine(); if(entry && entry.address && !l.some(x=>x.address&&x.address.toLowerCase()===entry.address.toLowerCase())){ l.unshift(entry); saveMine(l); } renderMine(); }
+  function extractToken(rcpt){
+    if(!rcpt||!rcpt.logs) return null;
+    const T='0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
+    const Z='0x0000000000000000000000000000000000000000000000000000000000000000';
+    for(const lg of rcpt.logs){ if(lg.topics&&lg.topics.length===3&&lg.topics[0]&&lg.topics[0].toLowerCase()===T&&lg.topics[1]&&lg.topics[1].toLowerCase()===Z) return lg.address; }
+    return null;
+  }
+  function normalizeToken(t){
+    if(!t||typeof t!=='object') return null;
+    const address=pick(t.address,t.tokenAddress,t.token,t.contract,t.id); if(!address) return null;
+    const md=t.metadata||{};
+    const name=pick(t.name,md.name,'Token');
+    const symbol=pick(t.symbol,t.ticker,md.symbol,'');
+    const image=resolveImg(pick(t.image,t.imageUrl,t.logo,t.icon,md.image,''));
+    const p=t.progress||{};
+    let bps=Number(pick(p.bps,t.progressBps,t.bps,0))||0; bps=Math.max(0,Math.min(10000,bps));
+    const graduated=(p.graduated===true)||(t.graduated===true)||bps>=10000;
+    return { address:String(address), name, symbol, image, bps, graduated };
+  }
+  function tokenCard(t){
+    const im=t.image?('<img src="'+esc(t.image)+'" alt="">'):'<img alt="">';
+    const pct=Math.round((t.bps||0)/100);
+    const lbl=t.graduated?'<span class="badge grad">GRADUATED</span>':(pct+'% to graduation');
+    return '<div class="mine-card" data-addr="'+esc(String(t.address).toLowerCase())+'"><div class="top">'+im
+      +'<div><div class="nm">'+esc(t.name||'Token')+'</div><div class="tk">'+(t.symbol?('$'+esc(t.symbol)):'')+'</div></div></div>'
+      +'<div class="prog"><div class="bar" style="width:'+pct+'%"></div></div>'
+      +'<div class="prog-lbl">'+lbl+'</div>'
+      +'<div class="row"><a class="chip" href="https://stablescan.xyz/token/'+esc(t.address)+'" target="_blank" rel="noopener">explorer ↗</a>'
+      +'<a class="chip" href="https://dexscreener.com/stable/'+esc(t.address)+'" target="_blank" rel="noopener">chart ↗</a></div></div>';
+  }
+  function renderMine(){
+    const grid=$('mineGrid'); if(!grid) return; const l=getMine();
+    if(!l.length){ grid.innerHTML='<div class="mine-empty">Your FINPAD launches show up here. Launch a token above, or add one you already launched.</div>'; return; }
+    grid.innerHTML=l.map(t=>tokenCard({address:t.address,name:t.name,symbol:t.symbol,image:resolveImg(t.image),bps:0,graduated:false})).join('');
+    enrichMine();
+  }
+  async function enrichMine(){
+    for(const t of getMine()){
+      try{ const r=await fetch(API+'/tokens/'+t.address); if(!r.ok) continue; const n=normalizeToken(await r.json()); if(n) updateCard(n); }catch(e){}
+    }
+  }
+  function updateCard(n){
+    document.querySelectorAll('.mine-card').forEach(c=>{
+      if((c.getAttribute('data-addr')||'')!==String(n.address).toLowerCase()) return;
+      const pct=Math.round((n.bps||0)/100);
+      const bar=c.querySelector('.bar'); if(bar) bar.style.width=pct+'%';
+      const lbl=c.querySelector('.prog-lbl'); if(lbl) lbl.innerHTML=n.graduated?'<span class="badge grad">GRADUATED</span>':(pct+'% to graduation');
+      const img=c.querySelector('img'); if(img && n.image && !img.getAttribute('src')) img.setAttribute('src',n.image);
+      const nm=c.querySelector('.nm'); if(nm && n.name && nm.textContent==='Token') nm.textContent=n.name;
+    });
+  }
+  async function loadGraduated(){
+    const grid=$('gradGrid'); if(!grid) return;
+    grid.innerHTML='<div class="mine-empty">Loading…</div>';
+    try{
+      const r=await fetch(API+'/tokens?limit=100'); if(!r.ok) throw 0;
+      const j=await r.json(); const arr=Array.isArray(j)?j:(j.tokens||j.data||j.items||[]);
+      const grads=arr.map(normalizeToken).filter(t=>t&&t.graduated).slice(0,24);
+      if(!grads.length){ grid.innerHTML='<div class="mine-empty">No tokens have graduated yet. Be the first.</div>'; return; }
+      grid.innerHTML=grads.map(tokenCard).join('');
+    }catch(e){ grid.innerHTML='<div class="mine-empty">Could not load right now.</div>'; }
+  }
+  const addTokenBtn=$('addToken');
+  if(addTokenBtn) addTokenBtn.addEventListener('click', async ()=>{
+    const a=(prompt('Paste the token contract address (0x...)')||'').trim();
+    if(!a) return;
+    if(!/^0x[0-9a-fA-F]{40}$/.test(a)){ toast('That is not a valid address.',true); return; }
+    const entry={ address:a, name:'', symbol:'', image:'', ts:Date.now() };
+    try{ const r=await fetch(API+'/tokens/'+a); if(r.ok){ const n=normalizeToken(await r.json()); if(n){ entry.name=n.name; entry.symbol=n.symbol; entry.image=n.image; } } }catch(e){}
+    addMine(entry); toast('Added.');
+  });
+  renderMine();
+  loadGraduated();
 </script>
 </body>
 </html>
