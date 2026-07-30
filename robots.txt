@@ -1,0 +1,5 @@
+# https://finpad.fun
+User-agent: *
+Allow: /
+
+Sitemap: https://finpad.fun/sitemap.xml
