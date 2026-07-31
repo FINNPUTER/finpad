@@ -143,9 +143,10 @@
   .mine-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
   .mine-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:9px}
   .mine-card .top{display:flex;gap:11px;align-items:center}
+  .mine-card .top>div{min-width:0;flex:1}
   .mine-card img{width:46px;height:46px;border-radius:10px;object-fit:cover;background:#0d0b07;flex:none}
-  .mine-card .nm{font-family:var(--disp);font-weight:600;font-size:16px;color:var(--gold-bright);line-height:1.15}
-  .mine-card .tk{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .mine-card .nm{font-family:var(--disp);font-weight:600;font-size:16px;color:var(--gold-bright);line-height:1.15;min-width:0;overflow-wrap:anywhere;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .mine-card .tk{font-family:var(--mono);font-size:11px;color:var(--muted);overflow-wrap:anywhere;word-break:break-word}
   .mine-card .addr{font-family:var(--mono);font-size:11px;color:var(--muted)}
   .mine-card .row{display:flex;gap:8px;flex-wrap:wrap}
   .mine-card a.chip{font-family:var(--mono);font-size:11px;color:var(--gold);border:1px solid var(--line);border-radius:7px;padding:5px 8px;text-decoration:none;background:rgba(111,196,79,.05)}
