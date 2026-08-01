@@ -127,7 +127,8 @@
   .row-item{display:flex; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--line-2)}
   .row-item:first-of-type{border-top:0}
   .row-item img{width:34px;height:34px;border-radius:9px;object-fit:cover}
-  .row-item .rn{font-weight:600; font-size:14px} .row-item .rs{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .row-item>div{min-width:0}
+  .row-item .rn{font-weight:600; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap} .row-item .rs{font-family:var(--mono);font-size:11px;color:var(--muted)}
   .row-item .rv{margin-left:auto; font-family:var(--mono); font-size:13px; text-align:right}
 
   /* bar chart */
@@ -139,7 +140,7 @@
   .back{display:inline-flex; align-items:center; gap:8px; color:var(--muted); font-size:13px; margin:26px 0 18px} .back:hover{color:var(--ink)}
   .det-hd{display:flex; align-items:center; gap:16px; padding:20px}
   .det-hd img{width:60px;height:60px;border-radius:14px;object-fit:cover}
-  .det-hd .nm{font-family:var(--disp); font-weight:600; font-size:24px}
+  .det-hd .nm{font-family:var(--disp); font-weight:600; font-size:24px; overflow-wrap:anywhere; word-break:break-word; min-width:0}
   .det-hd .meta{font-family:var(--mono); font-size:12px; color:var(--muted); margin-top:4px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
   .det-grid{display:grid; grid-template-columns:340px 1fr; gap:16px; margin-top:16px; align-items:start}
   .stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line-2); border:1px solid var(--line); border-radius:var(--r); overflow:hidden}
@@ -147,6 +148,14 @@
   .stat-row .k{font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
   .stat-row .v{font-family:var(--disp); font-weight:600; font-size:20px; margin-top:6px}
   .chart-wrap{padding:16px}
+  .grad-box{padding:16px 20px;margin-top:16px}
+  .grad-top{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:10px;gap:12px;flex-wrap:wrap}
+  .grad-top .pct{font-family:var(--disp);font-size:18px;color:var(--grn-bright);font-weight:600}
+  .grad-top b{color:var(--ink)}
+  .grad-bar{height:11px;background:rgba(120,220,180,.1);border-radius:99px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.35)}
+  .grad-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--grn-deep),var(--grn-bright));border-radius:99px;box-shadow:0 0 14px rgba(52,211,154,.55);transition:width .5s cubic-bezier(.2,.7,.3,1)}
+  .grad-bar i.done{background:linear-gradient(90deg,var(--gold),var(--gold-bright))}
+  .grad-note{font-size:12px;color:var(--faint);margin-top:10px;line-height:1.5}
   .chart-top{display:flex; align-items:baseline; gap:12px; margin-bottom:6px}
   .chart-top .px{font-family:var(--disp); font-weight:600; font-size:28px}
   .chart-top .chg{font-family:var(--mono); font-size:13px}
@@ -174,7 +183,8 @@
   .lrow{display:flex; align-items:center; gap:14px; padding:16px 20px; border-top:1px solid var(--line-2)}
   .lrow:first-child{border-top:0}
   .lrow img{width:40px;height:40px;border-radius:10px;object-fit:cover}
-  .lrow .ln{font-weight:600} .lrow .ls{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .lrow>div{min-width:0}
+  .lrow .ln{font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap} .lrow .ls{font-family:var(--mono);font-size:11px;color:var(--muted)}
   .lrow .rr{margin-left:auto;text-align:right;font-family:var(--mono);font-size:12px}
   .lrow .rr .big{font-size:15px;color:var(--gold-bright);font-weight:700}
 
@@ -219,6 +229,39 @@
     .foot-grid{grid-template-columns:1fr 1fr}
     nav.tabs{display:none}
   }
+
+  /* ═══════════ premium refinement — quiet luxury, champagne gold ═══════════ */
+  :root{
+    --bg:#05080a;
+    --line:rgba(214,184,112,.16);
+    --line-2:rgba(214,184,112,.07);
+    --gold:#d8bd6a; --gold-bright:#f4e6ad; --gold-deep:#b9974a;
+  }
+  body{background:
+    radial-gradient(1200px 520px at 82% -10%, rgba(52,211,154,.06), transparent 60%),
+    radial-gradient(1000px 560px at 4% 112%, rgba(216,184,106,.055), transparent 55%),
+    var(--bg);}
+  header.nav{box-shadow:0 1px 0 rgba(216,184,106,.06)}
+  .brand img{box-shadow:0 0 0 1px var(--gold),0 6px 18px rgba(0,0,0,.55)}
+  .eyebrow{letter-spacing:.26em}
+  h1.page{letter-spacing:-.5px}
+  .wallet-chip{border-color:var(--line)}
+  /* soften the neon glow so it reads refined, not crypto */
+  .btn.primary{box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 8px 22px -10px rgba(52,211,154,.4),0 2px 6px rgba(0,0,0,.35)}
+  .btn.primary:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 16px 36px -14px rgba(52,211,154,.44)}
+  /* panels: deeper, softer shadow + faint top highlight */
+  .glass,.panel{box-shadow:inset 0 1px 0 rgba(255,255,255,.02),0 24px 60px -38px rgba(0,0,0,.75)}
+  .tok:hover{box-shadow:0 26px 64px -36px rgba(0,0,0,.95),0 0 0 1px rgba(216,184,106,.2)}
+  .tok-hd{background:linear-gradient(135deg,rgba(52,211,154,.09),rgba(216,184,106,.06))}
+  .stat .v.gold,.grad-box .pct{color:var(--gold-bright)}
+  /* graduation bar — the one signature moment: milestone ticks + a slow gold shimmer */
+  .grad-bar{position:relative;height:12px;background:rgba(255,255,255,.045);box-shadow:inset 0 1px 3px rgba(0,0,0,.45)}
+  .grad-bar i{position:relative}
+  .grad-bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-100%);animation:gradShim 3s ease-in-out infinite}
+  .grad-bar::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(25% - 1.5px),rgba(216,184,106,.32) calc(25% - 1.5px),rgba(216,184,106,.32) 25%)}
+  @keyframes gradShim{0%{transform:translateX(-100%)}55%,100%{transform:translateX(240%)}}
+  @media(prefers-reduced-motion:reduce){.grad-bar i::after{animation:none}}
+
 </style>
 </head>
 <body>
@@ -439,7 +482,7 @@ async function viewStats(){
   const list=exploreCache||(exploreCache=await fetchTokens(60));
   const launched=list.length, graduated=list.filter(t=>t.graduated).length;
   const totalPool=list.reduce((s,t)=>s+(t.pool_usdt0||0),0);
-  const traded=list.filter(t=>(t.volume24h||0)>0).length;
+  const newest=Math.max(0,...list.map(t=>t.createdAt||0));
   // launches per day (last 30)
   const days=30, now=Date.now(), buckets=new Array(days).fill(0);
   list.forEach(t=>{ if(!t.createdAt) return; const d=Math.floor((now-t.createdAt)/86400000); if(d>=0&&d<days) buckets[days-1-d]++; });
@@ -448,10 +491,10 @@ async function viewStats(){
   const vol=list.slice().sort((a,b)=>(b.pool_usdt0||0)-(a.pool_usdt0||0)).slice(0,5);
   $('#statsBody').innerHTML=`
     <div class="stat-grid">
-      <div class="stat"><div class="k">Tokens launched</div><div class="v">${launched}</div><div class="n">in the latest batch</div></div>
+      <div class="stat"><div class="k">Recent launches</div><div class="v">${launched}</div><div class="n">newest on Stable · live</div></div>
       <div class="stat"><div class="k">Locked liquidity</div><div class="v gold">${fmtUsd(totalPool)}</div><div class="n">pooled, locked forever</div></div>
-      <div class="stat"><div class="k">Graduated</div><div class="v">${graduated}</div><div class="n">hit the milestone</div></div>
-      <div class="stat"><div class="k">Traded, 24h</div><div class="v">${traded}</div><div class="n">with at least one swap</div></div>
+      <div class="stat"><div class="k">Graduated</div><div class="v">${graduated}</div><div class="n">of these launches</div></div>
+      <div class="stat"><div class="k">Latest launch</div><div class="v" style="font-size:22px">${newest?ago(newest):'—'}</div><div class="n">most recent token</div></div>
     </div>
     <div class="glass card" style="margin-top:16px">
       <h3>Launches per day <span style="float:right;font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400">last ${days} days</span></h3>
@@ -528,6 +571,11 @@ async function viewToken(addr){
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="nm">${esc(t.name)}</span><span style="font-family:var(--mono);color:var(--grn)">$${esc(t.symbol||'')}</span>${grad}${you}<span class="badge y" style="border-color:var(--line);color:var(--muted)">🔒 LP locked</span></div>
         <div class="meta"><span>${short(t.address)}</span><span>·</span><span>${t.createdAt?('created '+ago(t.createdAt)):''}</span>${t.x?('<span>·</span><a href="'+esc(t.x)+'" target="_blank" rel="noopener" style="color:var(--grn)">𝕏</a>'):''}${t.website?('<a href="'+esc(t.website)+'" target="_blank" rel="noopener" style="color:var(--grn)">web</a>'):''}<a href="https://stablescan.xyz/token/${esc(t.address)}" target="_blank" rel="noopener" style="color:var(--grn)">explorer ↗</a></div>
       </div>
+    </div>
+    <div class="glass grad-box">
+      <div class="grad-top"><span>${t.graduated?'Graduated':'Graduation progress'}</span><span><span class="pct">${Math.round(t.bps/100)}%</span> · <b>${t.pool_usdt0!=null?fmtNum(t.pool_usdt0):'—'}</b> / 9,000 USDT0</span></div>
+      <div class="grad-bar"><i class="${t.graduated?'done':''}" style="width:${Math.min(100,Math.round(t.bps/100))}%"></i></div>
+      <div class="grad-note">${t.graduated?'This token reached the 9,000 USDT0 milestone. Liquidity stays locked forever.':'When the pool reaches 9,000 USDT0 it graduates — a permanent milestone. There is no bonding curve; the token trades in a normal Uniswap V3 pool from the start.'}</div>
     </div>
     <div class="det-grid">
       <div class="glass trade" id="tradeBox"></div>
