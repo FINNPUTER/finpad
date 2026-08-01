@@ -31,7 +31,7 @@
     --r:16px;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
+  html,body{margin:0;padding:0;overflow-x:hidden;width:100%}
   body{
     background:
       radial-gradient(1100px 500px at 78% -8%, rgba(52,211,154,.10), transparent 60%),
@@ -191,15 +191,15 @@
   /* ── modal ── */
   .modal{position:fixed; inset:0; background:rgba(3,6,6,.74); backdrop-filter:blur(8px); display:none; align-items:flex-start; justify-content:center; padding:26px 16px; z-index:60; overflow-y:auto}
   .modal.on{display:flex}
-  .sheet{background:linear-gradient(180deg,var(--panel-solid),#0a1210); border:1px solid var(--line); border-radius:20px; max-width:540px; width:100%; padding:28px; margin:auto; box-shadow:0 50px 130px rgba(0,0,0,.7)}
+  .sheet{background:linear-gradient(180deg,var(--panel-solid),#0a1210); border:1px solid var(--line); border-radius:20px; max-width:540px; width:100%; padding:28px; margin:auto; box-shadow:0 50px 130px rgba(0,0,0,.7); position:relative}
   .sheet h2{font-family:var(--disp); font-weight:600; font-size:26px; margin:0 0 4px; color:var(--grn-bright)}
   .sheet .lead{color:var(--muted); font-size:13px; margin:0 0 18px}
-  .close{position:absolute; top:22px; right:24px; width:36px; height:36px; border-radius:10px; background:rgba(120,220,180,.06); border:1px solid var(--line); color:var(--ink); font-size:19px; cursor:pointer}
+  .close{position:absolute; top:18px; right:18px; width:36px; height:36px; border-radius:10px; background:rgba(120,220,180,.06); border:1px solid var(--line); color:var(--ink); font-size:19px; cursor:pointer}
   .field{margin-bottom:14px} .field label{font-family:var(--mono); font-size:11px; color:var(--grn-deep); letter-spacing:.04em; display:block; margin-bottom:6px}
   .field input,.field textarea{width:100%; background:var(--panel-solid); border:1px solid var(--line); border-radius:11px; color:var(--ink); font-family:var(--body); font-size:14px; padding:12px 13px; outline:none}
   .field input:focus,.field textarea:focus{border-color:var(--grn)}
   .field textarea{resize:vertical; min-height:62px}
-  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:end}
   .drop{border:1.5px dashed var(--line); border-radius:12px; padding:20px; text-align:center; cursor:pointer; color:var(--muted); font-size:13px; background:var(--panel-solid)}
   .drop:hover{border-color:var(--grn);color:var(--ink)} .drop.has{border-style:solid;border-color:var(--grn)}
   .drop img{max-height:92px;border-radius:10px;margin:0 auto 8px;display:block}
@@ -227,7 +227,15 @@
   @media(max-width:860px){
     .det-grid{grid-template-columns:1fr} .cols2{grid-template-columns:1fr} .stat-row{grid-template-columns:1fr 1fr}
     .foot-grid{grid-template-columns:1fr 1fr}
-    nav.tabs{display:none}
+    .nav-in{flex-wrap:wrap; height:auto; padding:9px 0; gap:10px}
+    .brand{order:1} .nav-r{order:2; margin-left:auto; gap:8px}
+    nav.tabs{display:flex; order:3; width:100%; overflow-x:auto; gap:6px; padding-bottom:2px; scrollbar-width:none; -webkit-overflow-scrolling:touch}
+    nav.tabs::-webkit-scrollbar{display:none}
+    nav.tabs a{white-space:nowrap; flex:0 0 auto}
+    .btn.sm{padding:9px 12px}
+    .row2{grid-template-columns:1fr}
+    .modal{padding:16px 10px}
+    .sheet{padding:22px}
   }
 
   /* ═══════════ premium refinement — quiet luxury, champagne gold ═══════════ */
@@ -316,11 +324,11 @@
     <div class="field"><label>Description (optional)</label><textarea id="fDesc" maxlength="256" placeholder="A dapper cat on Stable."></textarea></div>
     <div class="row2">
       <div class="field"><label>Website (optional)</label><input id="fWeb" placeholder="https://" /></div>
-      <div class="field"><label>X / Twitter (optional)</label><input id="fX" placeholder="https://x.com/…" /></div>
+      <div class="field"><label>X / Twitter</label><input id="fX" placeholder="https://x.com/…" /></div>
     </div>
     <div class="row2">
       <div class="field"><label>Telegram (optional)</label><input id="fTg" placeholder="https://t.me/…" /></div>
-      <div class="field"><label>Initial buy · USDT0 (optional)</label><input id="fBuy" inputmode="decimal" placeholder="0" /></div>
+      <div class="field"><label>Initial buy · USDT0</label><input id="fBuy" inputmode="decimal" placeholder="0" /></div>
     </div>
     <details><summary>Advanced · send fees to another wallet</summary>
       <div class="field" style="margin-top:8px"><label>Fee recipient (0x wallet, optional)</label><input id="fRecipient" placeholder="Defaults to your wallet" /></div>
